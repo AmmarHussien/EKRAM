@@ -1,0 +1,20 @@
+{
+    "relate": "no",
+    "relationType": "other",
+    "IdentificationType": "Visitor",
+    "VisitorIdentificationType": "Passport",
+    "idNumber": "2237246455",
+    "birthDate": "1984-02-25",
+    "nationality": "مصر",
+    "issuingPlace": "egypt",
+    "religion": "Muslim",
+    "IdentificationExpireDate": "2030-02-25",
+    "name": "Gaza",
+    "gender": "male",
+    "IncidentDateandTime": "1984-02-25 0910AM",
+    "reportingDistrict": "المدينه المنورة",
+    "city": "المدينه المنورة ",
+    "requesterMobileNumber": "00000005",
+    "locationInMap": "المدينه المنورة",
+    "notes": "molahazat"
+}

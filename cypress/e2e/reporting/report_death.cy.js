@@ -4,6 +4,36 @@
 describe('Reporting Death', () => {
 
     before('login ', () => {
+
+        const filePath = 'cypress/fixtures/case/cases.json';
+        const filePath2 = 'cypress/fixtures/case/report.json'
+
+        cy.readFile(filePath2).then((readData) => {
+            cy.readFile(filePath) // Read the existing file
+                .then((existingData) => {
+                    // Modify the existing data or completely replace it
+                    const newData = {
+                        ...existingData,
+                        relate: readData.relate,
+                        relationType: readData.relationType,
+                        IdentificationType: readData.IdentificationType,
+                        Nationality: readData.nationality,
+                        religion: readData.religion,
+                        gender: readData.gender
+                    };
+
+                    cy.wrap(null) // Create a chain to continue the sequence
+                        .then(() => {
+                            // Write the modified data back to the same file
+                            cy.writeFile(filePath, newData);
+                        })
+                        .then(() => {
+                            cy.log('Data overwritten in JSON file successfully');
+                        })
+                })
+        })
+
+
         cy.visit('https://ekram-md.org/service-catalog')
 
         cy.get('.identity').click()
@@ -34,111 +64,169 @@ describe('Reporting Death', () => {
 
         cy.wait(3000)
 
-        cy.fixture('case/case.json').then((cases) => {
+        cy.fixture('case/cases.json').then((cases) => {
+            cy.fixture('case/report.json').then((reports) => {
 
-            if (cases.relate == 'no') {
-                cy.get(".form-check-input").eq(11).should("have.value", 'no').click({
-                    force: true
-                })
-            } else {
-                cy.get(".form-check-input").eq(10).click()
+                if (cases.relate == 'no') {
+                    cy.get(".form-check-input").eq(11).should("have.value", 'no').click({
+                        force: true
+                    })
+                } else {
+                    cy.get(".form-check-input").eq(10).click()
 
-                cy.get("div.form-control").eq(3).click().then(() => {
-                    if (cases.relation == 'father') {
-                        cy.get('#choices--requesterRelation-item-choice-1').click({ force: true })
-                    } else if (cases.relation == 'mother') {
-                        cy.get('#choices--requesterRelation-item-choice-2').click({ force: true })
-                    } else if (cases.relation == 'son') {
-                        cy.get('#choices--requesterRelation-item-choice-3').click({ force: true })
-                    } else if (cases.relation == 'daughter') {
-                        cy.get('#choices--requesterRelation-item-choice-4').click({ force: true })
-                    } else if (cases.relation == 'brother') {
-                        cy.get('#choices--requesterRelation-item-choice-5').click({ force: true })
-                    } else if (cases.relation == 'sister') {
-                        cy.get('#choices--requesterRelation-item-choice-6').click({ force: true })
-                    } else if (cases.relation == 'wife') {
-                        cy.get('#choices--requesterRelation-item-choice-7').click({ force: true })
-                    } else if (cases.relation == 'husband') {
-                        cy.get('#choices--requesterRelation-item-choice-8').click({ force: true })
-                    } else if (cases.relation == 'friend') {
-                        cy.get('#choices--requesterRelation-item-choice-9').click({ force: true })
-                    } else if (cases.relation == 'Workfriend') {
-                        cy.get('#choices--requesterRelation-item-choice-10').click({ force: true })
-                    } else if (cases.relation == 'sponsor') {
-                        cy.get('#choices--requesterRelation-item-choice-11').click({ force: true })
-                    } else if (cases.relation == 'other') {
-                        cy.get('#choices--requesterRelation-item-choice-12').click({ force: true })
-                        cy.get('#requesterActualRelation').type('غير ذالك')
+                    cy.get("div.form-control").eq(3).click().then(() => {
+                        const selectedRelation = reports.relationType;
+                        if (reports.relationType != 'other') {
+
+                            cy.get(`#choices--requesterRelation-item-choice-${cases.relations[selectedRelation].choice}`).click({ force: true });
+
+                        } else {
+
+                            cy.log(selectedRelation);
+
+                            cy.get(`#choices--requesterRelation-item-choice-${cases.relations[selectedRelation].choice}`).click({ force: true });
+
+                            cy.get('#requesterActualRelation').type(cases.relations.other.relation)
+                        }
+                        // else if (cases.relationType == 'mother') {
+
+                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.mother.choice}`).click({ force: true });
+
+                        // }// else if (cases.relationType == 'son') {
+
+                        // //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.son.choice}`).click({ force: true });
+
+                        // // }
+                        //  else if (cases.relationType == 'daughter') {
+
+                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.daughter.choice}`).click({ force: true });
+
+                        // } else if (cases.relationType == 'brother') {
+
+                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.brother.choice}`).click({ force: true });
+
+                        // } else if (cases.relationType == 'sister') {
+
+                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.sister.choice}`).click({ force: true });
+
+                        // } else if (cases.relationType == 'wife') {
+
+                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.wife.choice}`).click({ force: true });
+
+                        // } else if (cases.relationType == 'husband') {
+
+                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.husband.choice}`).click({ force: true });
+
+                        // } else if (cases.relationType == 'friend') {
+
+                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.friend.choice}`).click({ force: true });
+
+                        // } else if (cases.relationType == 'Workfriend') {
+
+                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.Workfriend.choice}`).click({ force: true });
+
+                        // } else if (cases.relationType == 'sponsor') {
+
+                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.sponsor.choice}`).click({ force: true });
+
+                        // } else if (cases.relationType == 'other') {
+
+                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.other.choice}`).click({ force: true });
+
+                        //     cy.get('#requesterActualRelation').type(cases.relations.other.relation)
+                        // }
+
+                    })
+                }
+
+                const selectIdentification = reports.IdentificationType;
+
+                if (cases.IdentificationType == 'Citizen' || cases.IdentificationType == 'Resident') {
+
+                    cy.get(".form-check-input").eq(cases.Identification[selectIdentification].choice).click({
+                        force: true
+                    })
+                    cy.get('#idNumber').type(`${reports.idNumber}`)
+
+                    cy.get('.input-group > .input').eq(0).type(`${reports.birthDate}{enter}`)
+
+                    cy.get('#nafathSync').click()
+
+                } else if (cases.IdentificationType == 'Visitor' || cases.IdentificationType == 'Umrah' || cases.IdentificationType == 'Haj') {
+
+                    cy.get(".form-check-input").eq(cases.Identification[selectIdentification].choice).click({
+                        force: true
+                    })
+                    cy.wait(2000)
+
+                    if (reports.VisitorIdentificationType == 'Passport') {
+                        cy.get(".form-check-input").eq(17).click({
+                            force: true
+                        })
+                    } else {
+                        cy.get(".form-check-input").eq(18).click({
+                            force: true
+                        })
                     }
 
+                    cy.get('#passportNumber').type(`${reports.idNumber}`)
+
+                    cy.get('.choices > div.form-control').eq(5).click().then(() => {
+                        cy.get('.choices > .choices__list--dropdown > .choices__input').eq(5).type(`${reports.nationality} {enter}`)
+                    })
+
+                    cy.get('.input-group > .input').eq(0).type(`${reports.birthDate}{enter}`)
+
+                    cy.get('#issuingPlace').type(`${reports.issuingPlace}`)
+
+                    if (cases.IdentificationType == 'Visitor') {
+
+                        cy.get('.choices > div.form-control').eq(6).click().then(() => {
+                            cy.wait(1000)
+                            const selectedreligion = reports.religion;
+                            cy.get(`#choices--religionList-item-choice-${cases.religionList[selectedreligion].choice}`).click({ force: true })
+                        })
+
+                    }
+
+                    cy.get('#name').type(reports.name)
+
+                    cy.get('.input-group > .input').eq(1).type(`${reports.IdentificationExpireDate}{enter}`)
+
+                    cy.get('.choices > div.form-control').eq(7).click().then(() => {
+                        cy.wait(1000)
+                        const selectedgender = reports.gender;
+                        cy.get(`.choices > .choices__list--dropdown > .choices__list > #choices--gender-item-choice-${cases.genderList[selectedgender].choice}`).eq(1).click({ force: true })
+                    })
+                }
+                cy.get('.input-group > .input').eq(3).click().clear().type(`${reports.IncidentDateandTime}{enter}`, { force: true })
+
+                cy.get('.choices > div.form-control').eq(8).click().then(() => {
+                    cy.get('.choices > .choices__list--dropdown > .choices__input').eq(8).type(`${reports.reportingDistrict} {enter}`)
                 })
-            }
-            if (cases.Identification == 'Citizen') {
-
-                cy.get(".form-check-input").eq(12).should("have.value", 'citizen').click({
-                    force: true
-                })
-                cy.get('#idNumber').type('1061735047')
-
-                cy.get('.input-group > .input').eq(0).type('1984-01-25{enter}')
-
-                cy.get('#nafathSync').click()
                 
-            } else if (cases.Identification == 'Resident') {
+                cy.wait(2000)
 
-                cy.get(".form-check-input").eq(13).click({
-                    force: true
+                cy.get('.choices > div.form-control').eq(9).click().then(() => {
+                    cy.get('.choices > .choices__list--dropdown > .choices__input').eq(9).type(`${reports.city} {enter}`)
                 })
 
-            } else if (cases.Identification == 'Visitor') {
+                cy.get('#requesterMobileNumber').type(reports.requesterMobileNumber)
 
-                cy.get(".form-check-input").eq(14).click({
-                    force: true
-                })
+                cy.get('#map-search').type(reports.locationInMap)
 
-            } else if (cases.Identification == 'Umrah') {
+                cy.get(':nth-child(1) > .pac-item-query > .pac-matched').click()
 
-                cy.get(".form-check-input").eq(15).click({
-                    force: true
-                })
+                cy.get(".form-check-input").eq(19).click()
 
-            } else if (cases.Identification == 'Haj') {
+                cy.get(".form-check-input").eq(20).click()
 
-                cy.get(".form-check-input").eq(16).click({
-                    force: true
-                })
+                cy.get('#notes').type(reports.notes)
 
-            }
+            })
 
+
+            //cy.get('#submit').click()
         })
-
-
-
-
-
-
-
-
-        // cy.get('.choices > div.form-control').eq(8).click().then(() => {
-        //     cy.get('#choices--reportingDistrict-item-choice-3').click({ force: true })
-        // })
-
-        // cy.get('.choices > div.form-control').eq(9).click().then(() => {
-        //     cy.get('#choices--city-item-choice-1').click({ force: true })
-        // })
-
-        // cy.get('#requesterMobileNumber').type('00000005')
-
-        // cy.get('#map-search').type('المدينه المنوره')
-
-        // cy.get('[style="position: absolute; left: 0px; top: 0px; z-index: 106; width: 100%;"] > div > img').click({ force: true })
-
-        // cy.get(".form-check-input").eq(18).click()
-
-        // cy.get(".form-check-input").eq(19).click()
-
-        // cy.get('#notes').type('molahazat')
-
-        //cy.get('#submit').click()
     })
 })

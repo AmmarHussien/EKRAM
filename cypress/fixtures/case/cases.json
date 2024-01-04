@@ -1,0 +1,80 @@
+{
+  "relate": "no",
+  "relations": {
+    "father": {
+      "choice": 1
+    },
+    "mother": {
+      "choice": 2
+    },
+    "son": {
+      "choice": 3
+    },
+    "daughter": {
+      "choice": 4
+    },
+    "brother": {
+      "choice": 5
+    },
+    "sister": {
+      "choice": 6
+    },
+    "wife": {
+      "choice": 7
+    },
+    "husband": {
+      "choice": 8
+    },
+    "friend": {
+      "choice": 9
+    },
+    "workfriend": {
+      "choice": 10
+    },
+    "sponsor": {
+      "choice": 11
+    },
+    "other": {
+      "choice": 12,
+      "relation": "غير ذالك"
+    }
+  },
+  "IdentificationType": "Visitor",
+  "Identification": {
+    "Citizen": {
+      "choice": 12
+    },
+    "Resident": {
+      "choice": 13
+    },
+    "Visitor": {
+      "choice": 14
+    },
+    "Umrah": {
+      "choice": 15
+    },
+    "Haj": {
+      "choice": 16
+    }
+  },
+  "relationType": "other",
+  "Nationality": "مصر",
+  "religion": "Muslim",
+  "religionList": {
+    "Muslim": {
+      "choice": 2
+    },
+    "NonMusilm": {
+      "choice": 1
+    }
+  },
+  "gender": "male",
+  "genderList": {
+    "male": {
+      "choice": 1
+    },
+    "female": {
+      "choice": 2
+    }
+  }
+}
