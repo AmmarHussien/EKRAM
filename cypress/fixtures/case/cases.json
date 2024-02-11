@@ -1,4 +1,22 @@
 {
+  "IdentificationTypeForRelation": "Visitor",
+  "IdentificationRelation": {
+    "Citizen": {
+      "choice": 3
+    },
+    "Resident": {
+      "choice": 4
+    },
+    "Visitor": {
+      "choice": 5
+    },
+    "Umrah": {
+      "choice": 6
+    },
+    "Haj": {
+      "choice": 7
+    }
+  },
   "relate": "no",
   "relations": {
     "father": {
@@ -35,29 +53,27 @@
       "choice": 11
     },
     "other": {
-      "choice": 12,
-      "relation": "غير ذالك"
+      "choice": 12
     }
   },
-  "IdentificationType": "Visitor",
-  "Identification": {
+  "IdentificationTypeForCase": "Resident",
+  "IdentificationCase": {
     "Citizen": {
-      "choice": 12
-    },
-    "Resident": {
       "choice": 13
     },
-    "Visitor": {
+    "Resident": {
       "choice": 14
     },
-    "Umrah": {
+    "Visitor": {
       "choice": 15
     },
-    "Haj": {
+    "Umrah": {
       "choice": 16
+    },
+    "Haj": {
+      "choice": 17
     }
   },
-  "relationType": "other",
   "Nationality": "مصر",
   "religion": "Muslim",
   "religionList": {
@@ -76,5 +92,6 @@
     "female": {
       "choice": 2
     }
-  }
+  },
+  "relationType": "other"
 }

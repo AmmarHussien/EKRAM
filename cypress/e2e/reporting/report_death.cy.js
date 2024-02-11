@@ -14,9 +14,10 @@ describe('Reporting Death', () => {
                     // Modify the existing data or completely replace it
                     const newData = {
                         ...existingData,
+                        IdentificationTypeForRelation: readData.IdentificationTypeRelation,
                         relate: readData.relate,
                         relationType: readData.relationType,
-                        IdentificationType: readData.IdentificationType,
+                        IdentificationTypeForCase: readData.IdentificationTypeCase,
                         Nationality: readData.nationality,
                         religion: readData.religion,
                         gender: readData.gender
@@ -32,8 +33,7 @@ describe('Reporting Death', () => {
                         })
                 })
         })
-
-
+        
         cy.visit('https://ekram-md.org/service-catalog')
 
         cy.get('.identity').click()
@@ -48,8 +48,8 @@ describe('Reporting Death', () => {
                 cy.log('Error: Unable to read user data from file');
             }
         });
-
-        cy.get('#kc-form-login-simple > #kc-form-buttons > #kc-login').click()
+        cy.get('#kc-login').click()
+       // cy.get('#kc-form-login-simple > #kc-form-buttons > #kc-login').click()
 
     })
     it('Report', () => {
@@ -67,83 +67,11 @@ describe('Reporting Death', () => {
         cy.fixture('case/cases.json').then((cases) => {
             cy.fixture('case/report.json').then((reports) => {
 
-                if (cases.relate == 'no') {
-                    cy.get(".form-check-input").eq(11).should("have.value", 'no').click({
-                        force: true
-                    })
-                } else {
-                    cy.get(".form-check-input").eq(10).click()
+                const selectIdentificationRelation = reports.IdentificationTypeRelation;
 
-                    cy.get("div.form-control").eq(3).click().then(() => {
-                        const selectedRelation = reports.relationType;
-                        if (reports.relationType != 'other') {
+                if (cases.IdentificationTypeForRelation == 'Citizen' || cases.IdentificationTypeForRelation == 'Resident') {
 
-                            cy.get(`#choices--requesterRelation-item-choice-${cases.relations[selectedRelation].choice}`).click({ force: true });
-
-                        } else {
-
-                            cy.log(selectedRelation);
-
-                            cy.get(`#choices--requesterRelation-item-choice-${cases.relations[selectedRelation].choice}`).click({ force: true });
-
-                            cy.get('#requesterActualRelation').type(cases.relations.other.relation)
-                        }
-                        // else if (cases.relationType == 'mother') {
-
-                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.mother.choice}`).click({ force: true });
-
-                        // }// else if (cases.relationType == 'son') {
-
-                        // //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.son.choice}`).click({ force: true });
-
-                        // // }
-                        //  else if (cases.relationType == 'daughter') {
-
-                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.daughter.choice}`).click({ force: true });
-
-                        // } else if (cases.relationType == 'brother') {
-
-                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.brother.choice}`).click({ force: true });
-
-                        // } else if (cases.relationType == 'sister') {
-
-                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.sister.choice}`).click({ force: true });
-
-                        // } else if (cases.relationType == 'wife') {
-
-                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.wife.choice}`).click({ force: true });
-
-                        // } else if (cases.relationType == 'husband') {
-
-                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.husband.choice}`).click({ force: true });
-
-                        // } else if (cases.relationType == 'friend') {
-
-                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.friend.choice}`).click({ force: true });
-
-                        // } else if (cases.relationType == 'Workfriend') {
-
-                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.Workfriend.choice}`).click({ force: true });
-
-                        // } else if (cases.relationType == 'sponsor') {
-
-                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.sponsor.choice}`).click({ force: true });
-
-                        // } else if (cases.relationType == 'other') {
-
-                        //     cy.get(`#choices--requesterRelation-item-choice-${cases.relations.other.choice}`).click({ force: true });
-
-                        //     cy.get('#requesterActualRelation').type(cases.relations.other.relation)
-                        // }
-
-                    })
-                }
-
-                const selectIdentification = reports.IdentificationType;
-
-                if (cases.IdentificationType == 'Citizen' || cases.IdentificationType == 'Resident') {
-
-                    cy.get(".form-check-input").eq(cases.Identification[selectIdentification].choice).click({
+                    cy.get(".form-check-input").eq(cases.IdentificationRelation[selectIdentificationRelation].choice).click({
                         force: true
                     })
                     cy.get('#idNumber').type(`${reports.idNumber}`)
@@ -152,34 +80,63 @@ describe('Reporting Death', () => {
 
                     cy.get('#nafathSync').click()
 
-                } else if (cases.IdentificationType == 'Visitor' || cases.IdentificationType == 'Umrah' || cases.IdentificationType == 'Haj') {
+                    if (cases.relate == 'no') {
 
-                    cy.get(".form-check-input").eq(cases.Identification[selectIdentification].choice).click({
+                        cy.get(".form-check-input").eq(10).should("have.value", 'no').click({
+                            force: true
+                        })
+
+                    } else {
+                        cy.get(".form-check-input").eq(9).click()
+
+                        cy.get("div.form-control").eq(6).click().then(() => {
+
+                            const selectedRelation = reports.relationType;
+
+                            if (reports.relationType != 'other') {
+
+                                cy.get(`#choices--reporterRelation-item-choice-${cases.relations[selectedRelation].choice}`).click({ force: true });
+
+                            } else {
+
+                                cy.log(selectedRelation);
+
+                                cy.get(`#choices--reporterRelation-item-choice-${cases.relations[selectedRelation].choice}`).click({ force: true });
+
+                                cy.get('#reporterActualRelation').type(reports.otherRelation)
+                            }
+
+                        })
+                    }
+
+                } else if (cases.IdentificationTypeForRelation == 'Visitor' || cases.IdentificationTypeForRelation == 'Umrah' || cases.IdentificationTypeForRelation == 'Haj') {
+
+                    cy.get(".form-check-input").eq(cases.IdentificationRelation[selectIdentificationRelation].choice).click({
                         force: true
                     })
                     cy.wait(2000)
 
-                    if (reports.VisitorIdentificationType == 'Passport') {
-                        cy.get(".form-check-input").eq(17).click({
+                    if (reports.VisitorIdentificationTypeRelation == 'Passport') {
+                        cy.get(".form-check-input").eq(8).click({
                             force: true
                         })
+                        cy.get('#passportNumber').type(`${reports.idNumberRelation}`)
                     } else {
-                        cy.get(".form-check-input").eq(18).click({
+                        cy.get(".form-check-input").eq(9).click({
                             force: true
                         })
+                        cy.get('#borderNumber').type(`${reports.idNumberRelation}`)
                     }
 
-                    cy.get('#passportNumber').type(`${reports.idNumber}`)
-
-                    cy.get('.choices > div.form-control').eq(5).click().then(() => {
-                        cy.get('.choices > .choices__list--dropdown > .choices__input').eq(5).type(`${reports.nationality} {enter}`)
+                    cy.get('.choices > div.form-control').eq(3).click().then(() => {
+                        cy.get('.choices > .choices__list--dropdown > .choices__input').eq(3).type(`${reports.nationalityRelation} {enter}`)
                     })
 
-                    cy.get('.input-group > .input').eq(0).type(`${reports.birthDate}{enter}`)
+                    cy.get('.input-group > .input').eq(0).type(`${reports.birthDateRelation}{enter}`)
 
-                    cy.get('#issuingPlace').type(`${reports.issuingPlace}`)
+                    cy.get('#issuingPlace').type(`${reports.issuingPlaceRelation}`)
 
-                    if (cases.IdentificationType == 'Visitor') {
+                    if (cases.IdentificationTypeRelation == 'Visitor') {
 
                         cy.get('.choices > div.form-control').eq(6).click().then(() => {
                             cy.wait(1000)
@@ -188,44 +145,189 @@ describe('Reporting Death', () => {
                         })
 
                     }
+                    cy.get('#name').type(reports.nameRelation)
 
-                    cy.get('#name').type(reports.name)
+                    cy.get('.input-group > .input').eq(1).type(`${reports.IdentificationExpireDateRelation}{enter}`)
 
-                    cy.get('.input-group > .input').eq(1).type(`${reports.IdentificationExpireDate}{enter}`)
-
-                    cy.get('.choices > div.form-control').eq(7).click().then(() => {
+                    cy.get('.choices > div.form-control').eq(5).click().then(() => {
                         cy.wait(1000)
-                        const selectedgender = reports.gender;
+                        const selectedgender = reports.genderRelation;
                         cy.get(`.choices > .choices__list--dropdown > .choices__list > #choices--gender-item-choice-${cases.genderList[selectedgender].choice}`).eq(1).click({ force: true })
                     })
-                }
-                cy.get('.input-group > .input').eq(3).click().clear().type(`${reports.IncidentDateandTime}{enter}`, { force: true })
 
-                cy.get('.choices > div.form-control').eq(8).click().then(() => {
-                    cy.get('.choices > .choices__list--dropdown > .choices__input').eq(8).type(`${reports.reportingDistrict} {enter}`)
-                })
+                    if (cases.relate == 'no') {
+                        cy.get(".form-check-input").eq(11).should("have.value", 'no').click({
+                            force: true
+                        })
+                    } else {
+                        cy.get(".form-check-input").eq(10).click()
+
+                        cy.get("div.form-control").eq(6).click().then(() => {
+                            const selectedRelation = reports.relationType;
+                            if (reports.relationType != 'other') {
+
+                                cy.get(`#choices--reporterRelation-item-choice-${cases.relations[selectedRelation].choice}`).click({ force: true });
+
+                            } else {
+
+                                cy.log(selectedRelation);
+
+                                cy.get(`#choices--reporterRelation-item-choice-${cases.relations[selectedRelation].choice}`).click({ force: true });
+
+                                cy.get('#reporterActualRelation').type(reports.otherRelation)
+                            }
+
+                        })
+                    }
+                }
                 
+                // cy.get('.formio-component-reporterMobileNumber').should('have.class', 'required')
+                // cy.get('#reporterMobileNumber').should('have.attr', 'required').type(reports.reporterNumber)
+
+                cy.get('#reporterMobileNumber').type(reports.reporterNumber)
+
+                const selectIdentificationCase = reports.IdentificationTypeCase;
+
+                if (cases.IdentificationTypeForCase == 'Citizen' || cases.IdentificationTypeForCase == 'Resident') {
+
+
+                    if (cases.IdentificationTypeForRelation == 'Citizen' || cases.IdentificationTypeForRelation == 'Resident') {
+
+                        cy.get(".form-check-input").eq(cases.IdentificationCase[selectIdentificationCase].choice).click({
+                            force: true
+                        })
+                        cy.get('.card-body #idNumber').eq(1).type(`${reports.idNumber}`)
+
+                        cy.get('.input-group > .input').eq(1).type(`${reports.birthDate}{enter}`)
+
+                        cy.get('.card-body #nafathSync').eq(1).click()
+
+                        cy.get('.input-group > .input').eq(3).click().clear().type(`${reports.IncidentDateandTime} {enter}`, { force: true })
+
+
+
+                    } else {
+                        cy.get(".form-check-input").eq(cases.IdentificationCase[selectIdentificationCase].choice + 1).click({
+                            force: true
+                        })
+                        cy.get('#idNumber').type(`${reports.idNumber}`)
+
+                        cy.get('.input-group > .input').eq(2).type(`${reports.birthDate}{enter}`)
+
+                        cy.get('#nafathSync').click()
+
+                        cy.get('.input-group > .input').eq(4).click().clear().type(`${reports.IncidentDateandTime} {enter}`, { force: true })
+
+                    }
+
+
+                } else if (cases.IdentificationTypeForCase == 'Visitor' || cases.IdentificationTypeForCase == 'Umrah' || cases.IdentificationTypeForCase == 'Haj') {
+
+
+                    if (cases.IdentificationTypeForRelation == 'Citizen' || cases.IdentificationTypeForRelation == 'Resident') {
+
+
+                        cy.get(".form-check-input").eq(cases.IdentificationCase[selectIdentificationCase].choice).click({
+                            force: true
+                        })
+                        cy.wait(2000)
+    
+                        if (reports.VisitorIdentificationTypeRelation == 'Passport') {
+                            cy.get(".form-check-input").eq(19).click({
+                                force: true
+                            })
+    
+                        } else {
+                            cy.get(".form-check-input").eq(20).click({
+                                force: true
+                            })
+                        }
+    
+                        ///////////////////////////////////////////////////////////////
+    
+                        cy.get('#passportNumber').type(`${reports.idNumber}`, { force: true })
+
+                        cy.get('.input-group > .input').eq(2).type(`${reports.IdentificationExpireDate}{enter}`)
+
+                        cy.get('.input-group > .input').eq(4).click().clear().type(`${reports.IncidentDateandTime} {enter}`, { force: true })
+
+                       
+
+                    } else {
+                        cy.get(".form-check-input").eq(cases.IdentificationCase[selectIdentificationCase].choice+1).click({
+                            force: true
+                        })
+                        cy.wait(2000)
+    
+                        if (reports.VisitorIdentificationTypeRelation == 'Passport') {
+                            cy.get(".form-check-input").eq(20).click({
+                                force: true
+                            })
+    
+                        } else {
+                            cy.get(".form-check-input").eq(21).click({
+                                force: true
+                            })
+                        }
+
+                        cy.get('.card-body #passportNumber').eq(1).type(`${reports.idNumber}`, { force: true })
+
+                        cy.get('.input-group > .input').eq(3).type(`${reports.IdentificationExpireDate}{enter}`)
+
+                        cy.get('.input-group > .input').eq(5).click().clear().type(`${reports.IncidentDateandTime} {enter}`, { force: true })
+
+                    }
+
+
+                    cy.get('.choices > div.form-control').eq(9).click().then(() => {
+                        cy.get('.choices > .choices__list--dropdown > .choices__input').eq(9).type(`${reports.nationality} {enter}`)
+                    })
+
+                    cy.get('.input-group > .input').eq(2).type(`${reports.birthDate}{enter}`)
+
+                    ///////////////////////////////////////////////////////////////
+
+                    cy.get('.card-body #issuingPlace').eq(1).type(`${reports.issuingPlace}`)
+
+                    if (cases.IdentificationType == 'Visitor') {
+
+                        cy.get('.choices > div.form-control').eq(10).click().then(() => {
+                            cy.wait(1000)
+                            const selectedreligion = reports.religion;
+                            cy.get(`#choices--religionList-item-choice-${cases.religionList[selectedreligion].choice}`).click({ force: true })
+                        })
+
+                    }
+
+                    cy.get('.card-body #name').eq(1).type(reports.name)
+                  
+
+                    cy.get('.choices > div.form-control').eq(11).click().then(() => {
+                        cy.wait(1000)
+                        const selectedgender = reports.gender;
+                        cy.get(`.choices > .choices__list--dropdown > .choices__list > #choices--gender-item-choice-${cases.genderList[selectedgender].choice}`).eq(2).click({ force: true })
+                    })
+                }
+
+
+                cy.get('.choices > div.form-control').eq(12).click().then(() => {
+                    cy.get('.choices > .choices__list--dropdown > .choices__input').eq(12).type(`${reports.reportingDistrict} {enter}`)
+                })
+
                 cy.wait(2000)
 
-                cy.get('.choices > div.form-control').eq(9).click().then(() => {
-                    cy.get('.choices > .choices__list--dropdown > .choices__input').eq(9).type(`${reports.city} {enter}`)
+                cy.get('.choices > div.form-control').eq(13).click().then(() => {
+                    cy.get('.choices > .choices__list--dropdown > .choices__input').eq(13).type(`${reports.city} {enter}`, { force: true })
                 })
-
-                cy.get('#requesterMobileNumber').type(reports.requesterMobileNumber)
 
                 cy.get('#map-search').type(reports.locationInMap)
 
                 cy.get(':nth-child(1) > .pac-item-query > .pac-matched').click()
 
-                cy.get(".form-check-input").eq(19).click()
-
-                cy.get(".form-check-input").eq(20).click()
 
                 cy.get('#notes').type(reports.notes)
 
             })
-
-
             //cy.get('#submit').click()
         })
     })

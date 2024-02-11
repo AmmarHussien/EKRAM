@@ -1,20 +1,61 @@
 {
+    "IdentificationTypeRelation": "Visitor",
+    
+    "VisitorIdentificationTypeRelation": "Border",
+
+    "idNumberRelation": "2237246455",
+
+    "birthDateRelation": "1994-02-25",
+
+    "nationalityRelation": "قطر",
+
+    "issuingPlaceRelation": "َQatar",
+
+    "religionRelation": "Muslim",
+
+    "IdentificationExpireDateRelation": "2033-02-25",
+
+    "nameRelation": "فلسطين",
+
+    "genderRelation": "male",
+
     "relate": "no",
+
     "relationType": "other",
-    "IdentificationType": "Visitor",
-    "VisitorIdentificationType": "Passport",
+
+    "otherRelation": "غير ذالك",
+
+    "reporterNumber": "45637898",
+
+    "IdentificationTypeCase": "Resident",
+
+    "VisitorIdentificationType": "Border",
+
     "idNumber": "2237246455",
+
     "birthDate": "1984-02-25",
+
     "nationality": "مصر",
+
     "issuingPlace": "egypt",
+
     "religion": "Muslim",
+
     "IdentificationExpireDate": "2030-02-25",
+
     "name": "Gaza",
+
     "gender": "male",
+
     "IncidentDateandTime": "1984-02-25 0910AM",
+
     "reportingDistrict": "المدينه المنورة",
+
     "city": "المدينه المنورة ",
+
     "requesterMobileNumber": "00000005",
+
     "locationInMap": "المدينه المنورة",
+
     "notes": "molahazat"
 }
